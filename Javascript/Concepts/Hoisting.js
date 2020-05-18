@@ -12,6 +12,18 @@ In JavaScript, an undeclared variable is assigned the value undefined at
 In JavaScript, a ReferenceError is thrown when trying to access a previously
 undeclared variable.
 
+console.log('name: ', name) // name: undefined
+console.log('handle: ', handle) // handle: undefined
+console.log('getUser :', getUser) // getUser: ƒ getUser () {}
 
+var name = 'Tyler'
+var handle = '@tylermcginnis'
+
+function getUser () {
+  return {
+    name: name,
+    handle: handle
+  }
+}
 
 */
