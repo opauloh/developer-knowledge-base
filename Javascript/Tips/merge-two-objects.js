@@ -11,9 +11,7 @@ The best solution in this case is to use Lodash and its merge() method, which wi
 const object1 = {
     name: 'Flavio'
 }
-
 const object2 = {
     age: 35
 }
-
 const object3 = { ...object1, ...object2 }
