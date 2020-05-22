@@ -6,15 +6,17 @@ For example,
 I want to change my state expanded to false whenever there is a route change
 > listen method in history property
 */
-constructor(props) {
-    super(props);
-    this.props.history.listen((location, action) => {
-        // console.log('history changed')
-        this.routeChange();
-    })
-}
-// routeChange function
-routeChange = () => {
-    const { BaseActions } = this.props
-    BaseActions.sideBar({ expanded: false })
+class routeChangeTestClass {
+    constructor(props) {
+        super(props);
+        this.props.history.listen((location, action) => {
+            // console.log('history changed')
+            this.routeChange();
+        })
+    }
+    // routeChange function
+    routeChange = () => {
+        const { BaseActions } = this.props
+        BaseActions.sideBar({ expanded: false })
+    }
 }
