@@ -218,4 +218,22 @@ can trigger a re-render when it’s updated, go with useState or useReducer.
 
 If you want to add state to your component that persists across renders but
 doesn’t trigger a re-render when it’s updated, go with useRef.
+
+
+What will ref be?
+*/
+
+function Foo() {
+  const bar = React.useRef()
+
+  return (
+    <button ref={bar}>Click</button>
+  )
+}
+/*
+An object with a current property which references the button DOM node
+
+What does useRef allow you to do?
+Persist a value across renders
+
 */
