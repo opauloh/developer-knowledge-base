@@ -253,15 +253,17 @@ identity operator (===) to compare the previous props with the current props.
 For both our NthFib component and NthPrime component, we’re passing an inline 
 function as the increment prop.
 */
-<NthFib
-    count={fibCount}
-    increment={() => setFibCount((c) => c + 1)}
-/>
+<>
+    <NthFib
+        count={fibCount}
+        increment={() => setFibCount((c) => c + 1)}
+    />
 
     <NthPrime
         count={primeCount}
         increment={() => setPrimeCount((c) => c + 1)}
     />
+</>
 /*
 This means for every render, we’re creating a brand new function in memory. 
 Because functions are reference types, when React.memo compares the previous 
@@ -280,8 +282,8 @@ return true and don’t re-render. If they’re not, return false and do re-rend
 ...
 */
 export default React.memo(NthFib, (prevProps, nextProps) => {
-        return prevProps.count === nextProps.count
-    })
+    return prevProps.count === nextProps.count
+})
 /*
 ...
 */
