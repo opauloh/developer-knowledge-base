@@ -63,7 +63,7 @@ class RectangleC extends SquareC {
 
 type ShapeC = SquareC | RectangleC;
 
-function calculateArea4(shape: ShapeT) {
+function calculateArea4(shape: ShapeC) {
   if (shape instanceof RectangleC) {
     return shape.width * shape.height; //is Rectangle
   }
