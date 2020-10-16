@@ -70,3 +70,26 @@ function calculateArea4(shape: ShapeC) {
 
   return shape.width * shape.width;
 }
+
+// Know that Type Operations Cannot Affect Runtime Values
+// Assuming we have the following function
+function asNumber(val: number | string): number {
+  return val as number;
+}
+// Looking to the generated Javascript makes it clear what this function really does:
+function generated_asNumber(val) {
+  return val;
+}
+// There is no conversion going on whatsover, because the "as number" is a type operation,
+// so it cannot affect the runtime behavior of your code, to normalize it you need
+// to check its runtime type
+function fixed_asNumber(val: number | string): number {
+  return typeof val === 'string' ? Number(val) : val;
+}
+
+//Remember:
+// - Code generation is independent of the type system, this is why typescript types
+// cannot affect the runtime behavior or performance of your code
+// - Its possible to a program with type error to produce code ("compile")
+// - Typescript types are not available at runtime, so you need a different way to query
+// a type at runtime as a value, using "tags" or classes are common way of achieving this
