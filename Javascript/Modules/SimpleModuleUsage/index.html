@@ -1,8 +1,11 @@
 <!-- 
   - CORS will block import if opening this file (thanksfully 🙏🏻, because we need to serve it from a server!)
   - We can start a serve locally by running `npx serve` in the terminal
+  - We can't leave the extension of (.js), because node can interpret without extension, but the browser can't
+  - We can import from any URL - Ex (import * as d3 from 'https://unpkg.com/d3?module';)
 -->
 <script type="module">
   import { appendDiv } from './append-div.js';
-  appendDiv('Hello');
+  appendDiv('Hello from inline script');
 </script>
+<script type="module" src="./script-src.js"></script>
