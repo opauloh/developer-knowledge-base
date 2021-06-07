@@ -1,27 +1,16 @@
 const generateTriangleTemplate = (rowsQty) => {
-  return [...Array(rowsQty)]
-    .reduce((prev, _, idx) => {
-      prev = prev.concat([[...Array(idx + 1)]]);
-      return prev;
-    }, [])
-    .map((row) => {
-      let lastColumn = row.length - 1;
-      row[0] = 1;
-      row[lastColumn] = 1;
-      return row;
-    });
+  return [...Array(rowsQty)].reduce((prev, _, idx) => {
+    const row = [...Array(idx + 1)];
+    row[0] = row[idx] = 1;
+    return (prev = prev.concat([row]));
+  }, []);
 };
 
 const computePascalTriangle = (triangle) => {
-  for (let row = 0; row < triangle.length; row++) {
-    for (let column = 0; column < triangle[row].length; column++) {
-      let actualColumnValue = triangle[row][column];
-
-      if (!actualColumnValue) {
-        triangle[row][column] =
-          triangle[row - 1][column - 1] + triangle[row - 1][column];
-      }
-    }
+  for (let rIdx = 0; rIdx < triangle.length; rIdx++) {
+    triangle[rIdx] = triangle[rIdx].map((col, cIdx) =>
+      col ? col : triangle[rIdx - 1][cIdx - 1] + triangle[rIdx - 1][cIdx]
+    );
   }
 
   return triangle;
@@ -29,6 +18,5 @@ const computePascalTriangle = (triangle) => {
 export const rows = (rowsQty = 0) => {
   if (rowsQty === 0) return [];
 
-  const triangleShape = generateTriangleTemplate(rowsQty);
-  return computePascalTriangle(triangleShape);
+  return computePascalTriangle(generateTriangleTemplate(rowsQty));
 };
