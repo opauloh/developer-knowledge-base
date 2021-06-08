@@ -16,14 +16,16 @@ This will print the following output.
 [1, 2, 3]
 [1, 2, 3, 4]
 We can also complete the sum function and make it calculate the sum of all the parameters passed to the function.
+
+References: https://www.freecodecamp.org/news/javascript-object-destructuring-spread-operator-rest-parameter/
 */
 function sum(...values) {
-    let sum = 0;
-    for (let i = 0; i < values.length; i++) {
-        sum += values[i];
-    }
+  let sum = 0;
+  for (let i = 0; i < values.length; i++) {
+    sum += values[i];
+  }
 
-    return sum;
+  return sum;
 }
 console.log(sum(1));
 console.log(sum(1, 2));
