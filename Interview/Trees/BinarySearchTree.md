@@ -11,7 +11,7 @@ Note that this inequality must be true for all of a node's descendents, not just
 its immediate children. The following tree on the left below is a binary search
 tree. The tree on the right is not, since 12 is to the left of 8.
 
-![](2021-06-18-10-55-06.png)
+![](screenshots/screenshot-20210618110154.png)
 
 When given a tree question, many candidates assume the interviewer means a
 binary search tree. Be sure to ask. A binary search tree imposes the condition
