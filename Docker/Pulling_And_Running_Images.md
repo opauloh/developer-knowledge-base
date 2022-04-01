@@ -25,3 +25,5 @@ To run the image, use the `docker run` command, in this case for example:
 ```bash
 docker run -i -t ubuntu
 ```
+
+More references on: https://github.com/opauloh/docker-mastery-for-nodejs-main
