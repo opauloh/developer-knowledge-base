@@ -142,8 +142,8 @@ over there, on the side, on the right side, is making decisions about where thin
 
 ### Containers
 
-By default, Kubernetes uses the Docker Engine to run containers, but it can be configured to use other
-containers, for example:
+By default, Kubernetes itself does not run containers, it uses the Docker Engine to run containers, but it can
+be configured to use other containers, for example:
 
 - `containerd`, that is maintained by Docker, IMB and community
 - `CRI-O`: maintained by RED Hat, Suse, and community
@@ -172,3 +172,156 @@ multiple.
 - ip addresses are associated with pods, not with individual containers
 - container in a pod share `localhost`, and can share volumes
 - in reality, docker doesn't know a pod, only containers/namespaces/volumes
+
+## Kubernetes Commands
+
+[Official Documentation](https://kubernetes.io/docs/reference/#api-reference)
+
+- Be aware that some distributions might expand the list of commands, so it's good to have a understand about
+  how to list and interact with custom resources that won't be available in the official documentation.
+
+### kubectl get node
+
+list all machines in the cluster, can be abbreviated to `kubectl get no`
+
+![](img/README-20220404162309.png)
+
+- it supports changing the output with the -o flag, i.e `kubectl get no -o yaml`, or `kubectl get no -o json`
+- also show more information with the -o wide flag, i.e `kubectl get no -o wide`
+- We can use `jq` to filter the output from the JSON format, i.e
+  `kubectl get no -o json | jq ".items[] | {name:.metadata.name} + .status.capacity"`
+
+### kubectl describe node <node-name>
+
+Shows informations about the node itself, also it shows pods running
+
+![](img/README-20220404163045.png)
+
+![](img/README-20220404163122.png)
+
+### kubectl api-resources
+
+List all the resources available in the cluster
+
+### kubectl explain <resource>
+
+Show information about the resource, i.e `kubectl explain pods`
+
+```bash
+KIND:     Pod
+VERSION:  v1
+
+DESCRIPTION:
+     Pod is a collection of containers that can run on a host. This resource is
+     created by clients and scheduled onto hosts.
+
+FIELDS:
+   apiVersion   <string>
+     APIVersion defines the versioned schema of this representation of an
+     object. Servers should convert recognized schemas to the latest internal
+     value, and may reject unrecognized values. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+
+   kind <string>
+     Kind is a string value representing the REST resource this object
+     represents. Servers may infer this from the endpoint the client submits
+     requests to. Cannot be updated. In CamelCase. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+
+   metadata     <Object>
+     Standard object metadata. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+
+   spec <Object>
+     Specification of the desired behavior of the pod. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+
+   status       <Object>
+     Most recently observed status of the pod. This data may not be up to date.
+     Populated by the system. Read-only. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+```
+
+- it also can show information about all the fields wr can interact with a resource with
+  `kubectl explain node --recursive`
+
+### kubectl get services
+
+A service is a stable endpoint to connect to "something". (it can be used to access a set of pods)
+
+![](img/README-20220404164108.png)
+
+### kubectl get namespaces
+
+It shows the namespaces in the cluster. Namespaces allow us to segregate resources
+
+![](img/README-20220404164449.png)
+
+[Reference](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
+
+- `kube-public`: just used for installation, and then eventually to connect into something
+- `kube-node-lease`: node leases are a way to implement heartbeat for nodes
+
+### kubectl get pods
+
+We can use `kubectl get pods --all-namespaces` or `kubectl get pods -A` to see all the pods in the cluster,
+regardless of the namespace
+
+- You can list all the pods in a namespace with `kubectl get pods --namespace <namespace>`, i.e
+  `kubectl get pods --namespace=kube-system`
+
+```bash
+NAME                                       READY   STATUS    RESTARTS   AGE
+coredns-64c6478b6c-7r4gz                   1/1     Running   0          4h17m
+calico-node-dx5wr                          1/1     Running   0          4h28m
+calico-kube-controllers-5b9576dd95-x5jfq   1/1     Running   0          4h28m
+```
+
+#### Usage:
+
+- You can get namespaces using `kubectl get namespaces`
+
+```
+NAME              STATUS   AGE
+kube-system       Active   22h
+kube-public       Active   22h
+kube-node-lease   Active   22h
+default           Active   22h
+shpod             Active   22h
+```
+
+- then you can get informations about the namespace
+
+- `kubectl -n kube-public get pods`
+
+```
+No resources found in kube-public namespace.
+```
+
+- `kubectl -n kube-public get configmaps`
+
+```
+NAME                     DATA   AGE
+local-registry-hosting   1      22h
+kube-root-ca.crt         1      22h
+```
+
+- `kubectl -n kube-public get configmap local-registry-hosting -o yaml`
+
+```yml
+apiVersion: v1
+data:
+  localRegistryHosting.v1: |
+    help: "https://microk8s.io/docs/registry-built-in"
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"localRegistryHosting.v1":"help: \"https://microk8s.io/docs/registry-built-in\"\n"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"local-registry-hosting","namespace":"kube-public"}}
+  creationTimestamp: '2022-04-04T15:25:58Z'
+  name: local-registry-hosting
+  namespace: kube-public
+  resourceVersion: '248'
+  selfLink: /api/v1/namespaces/kube-public/configmaps/local-registry-hosting
+  uid: 9ad6f99e-a48f-453e-8e94-2c9cbe65afa7
+```
