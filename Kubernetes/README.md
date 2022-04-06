@@ -1,5 +1,8 @@
 # Kubernetes
 
+This are my notes from the
+[Kubernetes Mastery: Hands-On Lessons From A Docker Captain](https://www.udemy.com/course/kubernetesmastery)
+
 ## Orchestration
 
 ### Why orchestration
@@ -325,3 +328,105 @@ metadata:
   selfLink: /api/v1/namespaces/kube-public/configmaps/local-registry-hosting
   uid: 9ad6f99e-a48f-453e-8e94-2c9cbe65afa7
 ```
+
+## Running containers on Kubernetes
+
+Note: we cannot run a container, we re going to run a pod, and in that pode there will be the container(s).
+
+### kubectl run
+
+i.e if we run the command `kubectl run pingpong --image alpine ping 1.1.1.1`, it will create a pod with the
+name `pingpong` and the image `alpine`
+
+- `kubectl get all`
+
+```
+NAME           READY   STATUS    RESTARTS   AGE
+pod/pingpong   1/1     Running   0          58s
+
+NAME                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.152.183.1   <none>        443/TCP   22h
+```
+
+![](img/README-20220405112801.png)
+
+The idea is that `kubectl run` is similar to `docker run`. It creates a single `pod`, where `docker run`
+creates a single container.
+
+### kubectl logs pod <name> or kubectl logs type <name>
+
+i.e `kubectl logs pod/pingpong`
+
+```
+PING 1.1.1.1 (1.1.1.1): 56 data bytes
+64 bytes from 1.1.1.1: seq=0 ttl=59 time=14.499 ms
+64 bytes from 1.1.1.1: seq=1 ttl=59 time=15.021 ms
+64 bytes from 1.1.1.1: seq=2 ttl=59 time=13.007 ms
+64 bytes from 1.1.1.1: seq=3 ttl=59 time=10.318 ms
+64 bytes from 1.1.1.1: seq=4 ttl=59 time=10.496 ms
+64 bytes from 1.1.1.1: seq=5 ttl=59 time=12.254 ms
+```
+
+> Note: unless specified otherwise, it will only show logs of the first container in the pod
+
+- `kubectl logs pod/pingpong --tail 2` will show the last 2 lines of the logs
+- `kubectl logs pod/pingpong --tail 1 --follow` will show the last line of the logs, and will show new logs
+- `kubectl get pods -w` will watch the pods
+
+### kubectl delete pod <name>
+
+- i.e `kubectl delete pod/pingpong`
+
+```
+pingpong   1/1     Running   1 (22m ago)   123m
+pingpong   1/1     Terminating   1 (23m ago)   123m
+pingpong   1/1     Terminating   1 (23m ago)   124m
+pingpong   0/1     Terminating   1 (23m ago)   124m
+```
+
+This command terminates the pod gracefully (sending the TERM signal and waiting for the pod to shutdown)
+
+- We can still see the output of the "terminating" pod with `kubectl logs` until 30 seconds later (can be
+  configurable), when the grace period ends
+- The pod is then killed, and `kubectl logs` exits
+
+### kubectl create conjob
+
+A cron job is a job that will be execute dat specific intervals only
+
+- it reqires a schedule, represented as five space-separated fields:
+- - minute [0, 59]
+- - hour [0, 23]
+- - day of month [1, 31]
+- - month [1, 12]
+- - day of week [0, 6] (0 to 6 are Sunday to Saturday)
+- `*` means "all valid values"; `/N` means "every N"
+- Example `*/3 * * * *` means "every 3 minutes"
+
+`kubectl create cronjob every3mins --image alpine --schedule="*/3 * * * *" --restart=OnFailure -- sleep 10`
+
+### kubectl get cronjobs
+
+```
+NAME         SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+every3mins   */3 * * * *   False     0        40s             17m
+```
+
+- `kubectl get jobs`
+
+```
+NAME                  COMPLETIONS   DURATION   AGE
+every3mins-27487611   1/1           12s        7m32s
+every3mins-27487614   1/1           13s        4m32s
+every3mins-27487617   1/1           13s        92s
+```
+
+### Creating a deployment
+
+`kubectl create deployment pingpong --image alpine -- ping 1.1.1.1`
+
+### Scalling up a deployment
+
+We can create additional copies of our pod with `kubectl scale`.
+
+i.e `kubectl scale pod/pingpong --replicas 3`
