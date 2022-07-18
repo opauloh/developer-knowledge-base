@@ -430,3 +430,64 @@ every3mins-27487617   1/1           13s        92s
 We can create additional copies of our pod with `kubectl scale`.
 
 i.e `kubectl scale pod/pingpong --replicas 3`
+
+### Creating Resources
+
+- `kubectl apply -f foo.yaml`
+
+the apply command is always the best option over other commands suce as `kubectl create` or the old
+`kubectl run`, because it requires you to create a yaml file, which has a descriptor of what you're trying to
+create, or change or delete.
+
+In the same way `kubectl create` only creates, there are `kubectl update` and `kubectl delete`, that are
+declarative commands, you know what they are going to do, `kubectl apply` can handle all this based on what is
+written on the yaml file, it's like writting a state on the yaml file, and the command will apply the
+necessary changes in order to match that state.
+
+### Logs
+
+#### Streaming logs of multiple pods
+
+- Combine `-l` and `-f` flags:
+
+`kubectl logs -l run=pingpong --tail 1 -f`
+
+`-l` is for the label, usually in the yaml file like this:
+
+```yaml
+metadata:
+  name: project
+  namespace: default
+  labels:
+    app: project-abc
+```
+
+so in that case the arg would be `-l app=project-abc`
+
+##### Maximum number of logs
+
+By default the `kubectl logs` command only shows logs for up to 5 pods, so if you attempt to show logs you
+will get an error:
+
+```bash
+kubectl logs -l app=nginx --tail 1 -f -n staging
+
+error: you are attempting to follow 201 log streams, but maximum allowed concurrency is 5, use --max-log-requests to increase the limit
+```
+
+This limitation is about performance, because pulling logs is a strenuous thing, specially if apps are dumping
+logs en masse like a web application.
+
+For each of these pods there are more connection happening coming out `kubectl`, then the api has one
+connection to each kubelet, so we get a lot of back and forth happening, and this is what could easily
+overwhelm the API, and we don't want to do this.
+
+So instead of incresing the logs limit, we can rely to other tools, like
+[Stern](https://github.com/stern/stern), that allow us to tail multiple pods on Kubernetes and multiple
+containers within the pod, but be aware that it still can overload the API server if many pods are running
+
+You can see timestamp with the `-t` flag and also include all namespaces with the `-A` command:
+
+```
+stern -A pingpong --tail 1 -t
+```
