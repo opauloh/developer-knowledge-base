@@ -3,6 +3,10 @@
 This are my notes from the
 [Kubernetes Mastery: Hands-On Lessons From A Docker Captain](https://www.udemy.com/course/kubernetesmastery)
 
+## References
+
+[kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
+
 ## Assignments
 
 [Assignment 1](./Assignments/Assignment-1.md)
