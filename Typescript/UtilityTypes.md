@@ -28,15 +28,15 @@ type SecondParameter = MyParameters[1]; // string
 
 ## Awaited
 
-Use [Awaited](https://www.typescriptlang.org/docs/handbook/utility-types.html#awaitedtype) type to obtain the type of the awaited value of a promise-like type.
+Use [Awaited](https://www.typescriptlang.org/docs/handbook/utility-types.html#awaitedtype) type to obtain the
+type of the awaited value of a promise-like type.
 
 ```typescript
-
 const getUser = () => {
   return Promise.resolve({
-    id: "123",
-    name: "John",
-    email: "john@example.com",
+    id: '123',
+    name: 'John',
+    email: 'john@example.com',
   });
 };
 
@@ -155,4 +155,74 @@ type NonKeyDownEvents = Exclude<Event, { type: 'keydown' }>;
 //   event: FocusEvent;
 // }
 ```
+
+## Index Access Types
+
+Use [Index Access Types](https://www.typescriptlang.org/docs/handbook/utility-types.html#index-types) to
+obtain the type of a property from an object type.
+
+Basic Example
+
+```typescript
+type MyObject = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+type IdType = MyObject['id']; // string
+```
+
+Sofisticated Example
+
+```typescript
+export const fakeDataDefaults = {
+  String: 'Default string',
+  Int: 1,
+  Float: 1.14,
+  Boolean: true,
+  ID: 'id',
+  Nested: {
+    String: 'Default string',
+    Int: 1,
+    Float: 1.14,
+    Boolean: true,
+    ID: 'id',
+  },
+};
+
+type FakeDataDefaults = typeof fakeDataDefaults;
+export type StringType = FakeDataDefaults['String'];
+export type IntType = FakeDataDefaults['Int'];
+export type FloatType = FakeDataDefaults['Float'];
+export type BooleanType = FakeDataDefaults['Boolean'];
+export type IDType = FakeDataDefaults['ID'];
+
+export type NestedType = FakeDataDefaults['Nested'];
+export type NestedID = FakeDataDefaults['Nested']['ID'];
+
+// prettier-ignore
+export type NestedIDUsingTypeOF = typeof fakeDataDefault['Nested']['ID'];
+```
+
+You can also use it to extract the type of discriminator field from a discriminated union:
+
+```typescript
+// In this case, the `kind` field is the discriminator
+interface Square {
+  kind: 'square';
+  size: number;
+}
+interface Rectangle {
+  kind: 'rectangle';
+  width: number;
+  height: number;
+}
+interface Circle {
+  kind: 'circle';
+  radius: number;
+}
+type Shape = Square | Rectangle | Circle;
+
+type ShapeKind = Shape['kind']; // "square" | "rectangle" | "circle"
 ```
