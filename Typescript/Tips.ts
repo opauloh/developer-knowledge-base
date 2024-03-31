@@ -1,15 +1,7 @@
 /*
 Bind types with destructed function:
 */
-function email({
-  person,
-  subject,
-  body,
-}: {
-  person: string;
-  subject: string;
-  body: string;
-}) {
+function email({ person, subject, body }: { person: string; subject: string; body: string }) {
   console.log(person, subject, body);
 }
 
@@ -21,7 +13,7 @@ interface Props {
   title: string;
   poster: string;
 }
-
+// @ts-ignore
 const MovieCard: React.FC<Props> = ({ id, title, poster }) => ({});
 
 /*
@@ -73,3 +65,15 @@ type BackendModuleEnum = (typeof frontendToBackendEnumMap)[keyof typeof frontend
 type FrontentToBackend = typeof frontendToBackendEnumMap;
 type BackendModuleEnumReadable = FrontentToBackend[keyof FrontentToBackend];
 
+/*
+How to create Unions out of Array Values
+*/
+
+// First: We use as const annotation to extract the literal types from the array instead of string types.
+const fruits = ['apple', 'banana', 'orange'] as const;
+
+// We can use the indexed access operator to get the type of a specific index in the array.
+/* prettier-ignore */ type AppleOrBanana = typeof fruits[0 | 1]; // 'apple' | 'banana'
+
+// Or we can use number as the index type to get all the values in the array.
+/* prettier-ignore */ type Fruit = typeof fruits[number]; // 'apple' | 'banana' | 'orange'
