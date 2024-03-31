@@ -70,3 +70,89 @@ const user = {
 
 type UserKeys = keyof typeof user; // "id" | "name" | "email"
 ```
+
+## Extract
+
+Use [Extract](https://www.typescriptlang.org/docs/handbook/utility-types.html#extracttype-union) type to
+obtain a subset of types from a union type.
+
+Basic Example
+
+```typescript
+type MyUnion = 'a' | 'b' | 'c' | 'd';
+type MyExtract = Extract<MyUnion, 'a' | 'b'>; // 'a' | 'b'
+```
+
+Sofisticated Example
+
+```typescript
+export type Event =
+  | {
+      type: 'click';
+      event: MouseEvent;
+    }
+  | {
+      type: 'focus';
+      event: FocusEvent;
+    }
+  | {
+      type: 'keydown';
+      event: KeyboardEvent;
+    };
+
+type ClickEvent = Extract<Event, { type: 'click' }>;
+// ClickEvent : {
+//   type: 'click';
+//   event: MouseEvent;
+// }
+```
+
+In the above example we could also have used event to extract the type.
+
+```typescript
+type ClickEvent = Extract<Event, { event: MouseEvent }>;
+// ClickEvent : {
+//   type: 'click';
+//   event: MouseEvent;
+// }
+```
+
+## Exclude
+
+Use [Exclude](https://www.typescriptlang.org/docs/handbook/utility-types.html#excludetype-union) type to
+obtain a subset of types from a union type.
+
+Basic Example
+
+```typescript
+type MyUnion = 'a' | 'b' | 'c' | 'd';
+type MyExcludeCAndD = Exclude<MyUnion, 'a' | 'b'>; // 'c' | 'd'
+```
+
+Sofisticated Example
+
+```typescript
+export type Event =
+  | {
+      type: 'click';
+      event: MouseEvent;
+    }
+  | {
+      type: 'focus';
+      event: FocusEvent;
+    }
+  | {
+      type: 'keydown';
+      event: KeyboardEvent;
+    };
+
+type NonKeyDownEvents = Exclude<Event, { type: 'keydown' }>;
+// NonKeyDownEvents : {
+//   type: 'click';
+//   event: MouseEvent;
+// } | {
+//   type: 'focus';
+//   event: FocusEvent;
+// }
+```
+```
