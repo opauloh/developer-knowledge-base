@@ -43,3 +43,16 @@ type IndividualProgram = (typeof programModeEnumMap)[
   | 'PLANNED_ONE_ON_ONE'
   | 'PLANNED_SELF_DIRECTED']; // '1on1' | 'selfDirected' | 'planned1on1' | 'plannedSelfDirected'
 
+/*
+We can also use Exclude to create a union from an object's values:
+*/
+
+type GROUP_PROGRAMS = 'GROUP' | 'ANNOUNCEMENT';
+type SINGLE_PROGRAMS = Exclude<keyof typeof programModeEnumMap, GROUP_PROGRAMS>;
+type AlternativeIndividualProgram = (typeof programModeEnumMap)[SINGLE_PROGRAMS]; // '1on1' | 'selfDirected' | 'planned1on1' | 'plannedSelfDirected'
+
+// single type:
+type AlternativeIndividualProgramInline = (typeof programModeEnumMap)[Exclude<
+  keyof typeof programModeEnumMap,
+  'GROUP' | 'ANNOUNCEMENT'
+>];
