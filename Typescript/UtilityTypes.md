@@ -4,7 +4,8 @@ See Documentation: [Utility Types](https://www.typescriptlang.org/docs/handbook/
 
 ## ReturnType
 
-Use [ReturnType](https://www.typescriptlang.org/docs/handbook/utility-types.html#returntypetype) type to construct a type consisting of the return type of the function type Type.
+Use [ReturnType](https://www.typescriptlang.org/docs/handbook/utility-types.html#returntypetype) type to
+construct a type consisting of the return type of the function type Type.
 
 ```typescript
 type MyFunctionType = () => number;
@@ -13,7 +14,8 @@ type MyReturnType = ReturnType<MyFunctionType>; // number
 
 ## Parameters
 
-Use [Parameters](https://www.typescriptlang.org/docs/handbook/utility-types.html#parameterstype) type to construct a tuple type from the types used in the parameters of a function type Type.
+Use [Parameters](https://www.typescriptlang.org/docs/handbook/utility-types.html#parameterstype) type to
+construct a tuple type from the types used in the parameters of a function type Type.
 
 **Tip**: To access the tupple properties, use the index notation `[]` to access the properties.
 
@@ -39,4 +41,32 @@ const getUser = () => {
 };
 
 type ReturnValue = Awaited<ReturnType<typeof getUser>>; // { id: string, name: string, email: string }
+```
+
+## keyof
+
+Use `keyof` type to obtain the keys of an object type.
+
+```typescript
+type MyObject = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+type MyKeys = keyof MyObject; // "id" | "name" | "email"
+```
+
+### keyof with typeof
+
+Use `keyof` with `typeof` to obtain the keys of an object type.
+
+```typescript
+const user = {
+  id: '123',
+  name: 'John',
+  email: 'john@mail.com',
+};
+
+type UserKeys = keyof typeof user; // "id" | "name" | "email"
 ```
