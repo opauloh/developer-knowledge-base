@@ -226,3 +226,99 @@ type Shape = Square | Rectangle | Circle;
 
 type ShapeKind = Shape['kind']; // "square" | "rectangle" | "circle"
 ```
+
+## Record
+
+Use [Record](https://www.typescriptlang.org/docs/handbook/utility-types.html#recordkeystype) type to create an
+object type whose property keys are Keys and whose property values are Type.
+
+```typescript
+type MyRecord = Record<'a' | 'b', number>; // { a: number, b: number }
+```
+
+## Uppercase
+
+Use [Uppercase](https://www.typescriptlang.org/docs/handbook/utility-types.html#uppercasestringtype) type to
+convert a string type to uppercase.
+
+```typescript
+type MyString = 'hello';
+type MyUppercase = Uppercase<MyString>; // 'HELLO'
+```
+
+### Combining Record and Uppercase
+
+```typescript
+type MyRecord = Record<'a' | 'b', string>;
+type MyUppercase = Uppercase<MyRecord>; // { A: string, B: string }
+```
+
+Sofiasticated Example
+
+```typescript
+type Event = `log_in` | 'log_out' | 'sign_up';
+
+type ObjectOfKeys = Record<Uppercase<Event>, string>;
+
+const obj: ObjectOfKeys = {
+  LOG_IN: 'blabla',
+  LOG_OUT: 'testest',
+  SIGN_UP: 'hello',
+};
+```
+
+## Lowercase
+
+Use [Lowercase](https://www.typescriptlang.org/docs/handbook/utility-types.html#lowercasestringtype) type to
+convert a string type to lowercase.
+
+```typescript
+type MyString = 'HELLO';
+type MyLowercase = Lowercase<MyString>; // 'hello'
+```
+
+### Combining Record and Lowercase
+
+```typescript
+type MyRecord = Record<'A' | 'B', string>;
+type MyLowercase = Lowercase<MyRecord>; // { a: string, b: string }
+```
+
+Sofiasticated Example
+
+```typescript
+type Event = `LOG_IN` | 'LOG_OUT' | 'SIGN_UP';
+const obj: Record<Lowercase<Event>, string> = {
+  log_in: 'blabla',
+  log_out: 'test',
+  sign_up: 'hello',
+};
+```
+
+## Capitalize
+
+Use [Capitalize](https://www.typescriptlang.org/docs/handbook/utility-types.html#capitalizestringtype) type to
+convert the first character of a string to uppercase.
+
+```typescript
+type MyString = 'hello';
+type MyCapitalize = Capitalize<MyString>; // 'Hello'
+```
+
+### Combining Record and Capitalize
+
+```typescript
+type MyRecord = Record<'a' | 'b', string>;
+type MyCapitalize = Capitalize<MyRecord>; // { A: string, B: string }
+```
+
+Sofiasticated Example
+
+```typescript
+type Event = `log_in` | 'log_out' | 'sign_up';
+const obj: Record<Capitalize<Event>, string> = {
+  Log_in: 'blabla',
+  Log_out: 'test',
+  Sign_up: 'hello',
+};
+```
